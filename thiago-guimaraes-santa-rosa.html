@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<title>Thiago Guimarães Santa Rosa</title>
+
+	<style>
+		* {margin: 0; padding: 0;}
+		body {font: normal 10px/1em Arial, sans-serif;}
+		.tabuleiro {width: 500px; height: 300px; position: relative; padding: 20px 20px 30px; margin: 15% auto; background-color: #5d8b4b; -moz-border-radius: 7px; -webkit-border-radius: 7px; -o-border-radius: 7px; border-radius: 20px;}
+		.tabuleiro .descricao {position: absolute; bottom: 10px; left: 30px; font-size: 1.4em; font-weight: bold; text-transform: uppercase; color: #fff;}
+		.tabuleiro .tecnico {font-size: 1.4em; font-weight: bold; text-transform: uppercase; color: #fff; text-align: right; margin-top: 5px;}
+		.tabuleiro .campo {
+			background-color: #437349;
+			background-image: -webkit-linear-gradient(left, transparent 50%, #5d8b4b 50%);
+			background-image: -moz-linear-gradient(left, transparent 50%, #5d8b4b 50%);
+			background-image: -o-linear-gradient(left, transparent 50%, #5d8b4b 50%);
+			background-image: linear-gradient(left, transparent 50%, #5d8b4b 50%);
+			background-size: 67px 70px;
+			width: 100%; height: 100%; border: 1px dotted #fff; position: relative;
+		}
+		.tabuleiro .campo .escanteio {background-color: #fff; position: absolute; width: 12px; height: 12px;}
+		.tabuleiro .campo .escanteio-lt {left: 0; top: 0; border-radius: 0 0 12px 0}
+		.tabuleiro .campo .escanteio-lb {left: 0; bottom: 0; border-radius: 0 12px 0 0}
+		.tabuleiro .campo .escanteio-rt {right: 0; top: 0; border-radius: 0 0 0 12px}
+		.tabuleiro .campo .escanteio-rb {right: 0; bottom: 0; border-radius: 12px 0 0}
+		.tabuleiro .campo .meio-campo {position: absolute; top: 0; left: 50%; background-color: #fff; width: 1px; height: 100%}
+		.tabuleiro .campo .meio-campo .lua {width: 100px; height: 100px; border: 1px solid #fff; position: absolute; top: 33.3%; left: -50px; -moz-border-radius: 50%; -webkit-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%;}
+		.tabuleiro .campo .meio-campo .lua .bola {width: 10px; height: 10px; background-color: #fff; position: absolute; top: 45%; left: 45%; -moz-border-radius: 50%; -webkit-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%;}
+		.tabuleiro .campo .area {width: 90px; height: 180px; border: 1px solid #fff; position: absolute; top: 20%;}		
+		.tabuleiro .campo .area .meia-lua {width: 20px; height: 80px; border: 1px solid #fff; position: absolute; top: 27%;}
+		.tabuleiro .campo .area .pequena-area {width: 30px; height: 90px; border: 1px solid #fff; position: absolute; top: 25%;}
+		.tabuleiro .campo .area-direita {right: 0; border-right: 0}
+		.tabuleiro .campo .area-direita .meia-lua {left: -21px; border-right: 0; -moz-border-radius: 50% 0 0 50%; -webkit-border-radius: 50% 0 0 50%; -o-border-radius: 50% 0 0 50%; border-radius: 50% 0 0 50%;}
+		.tabuleiro .campo .area-direita .pequena-area {right: 0; border-right: 0}
+		.tabuleiro .campo .area-esquerda {left: 0; border-left: 0}
+		.tabuleiro .campo .area-esquerda .meia-lua {right: -21px; border-left: 0; -moz-border-radius: 0 50% 50% 0; -webkit-border-radius: 0 50% 50% 0; -o-border-radius: 0 50% 50% 0; border-radius: 0 50% 50% 0;}
+		.tabuleiro .campo .area-esquerda .pequena-area {left: 0; border-left: 0}
+		.tabuleiro .campo .goleiro {width: 20px; height: 30px; padding-top: 20px; background-color: #000; color: #fff; text-align: center; font-size: 1.2em; font-weight: bold; top: 42%; position: absolute;}
+		.tabuleiro .campo .botao {
+			background-color: #000;
+			background-image: -webkit-linear-gradient(left, transparent 80%, #fff 40%);
+			background-image: -moz-linear-gradient(left, transparent 50%, #fff 50%);
+			background-image: -o-linear-gradient(left, transparent 50%, #fff 50%);
+			background-image: linear-gradient(left, transparent 80%, #fff 40%);
+			background-size: 11px 11px;
+			width: 45px; height: 45px; position: absolute; border: 5px solid #fff; -moz-border-radius: 50%; -webkit-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%;
+		}
+		.tabuleiro .campo .camisa-2 {bottom: 20px; left: 80px;}
+		.tabuleiro .campo .camisa-3 {top: 80px; left: 40px}
+		.tabuleiro .campo .camisa-13 {bottom: 80px; left: 40px;}
+		.tabuleiro .campo .camisa-6 {top: 20px; left: 80px;}
+		.tabuleiro .campo .camisa-5 {bottom: 70px; left: 180px;}
+		.tabuleiro .campo .camisa-8 {top: 70px; left: 180px;}
+		.tabuleiro .campo .camisa-20 {top: 20px; right: 180px;}
+		.tabuleiro .campo .camisa-23 {bottom: 20px; right: 180px;}
+		.tabuleiro .campo .camisa-11 {top: 80px; right: 40px;}
+		.tabuleiro .campo .camisa-9 {bottom: 80px; right: 40px;}
+		.tabuleiro .campo .botao .numero {background: #fff; position: absolute; bottom: 7px; right: 7px; padding: 4px; font-size: 1.2em; font-weight: bold; -moz-border-radius: 50%; -webkit-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%;}
+	</style>
+</head>
+<body>
+
+	<div class="tabuleiro">
+		<div class="campo">
+			<!-- escanteios -->
+			<div class="escanteio escanteio-lt"></div>
+			<div class="escanteio escanteio-lb"></div>
+			<div class="escanteio escanteio-rt"></div>
+			<div class="escanteio escanteio-rb"></div>
+
+			<!-- meio de campo -->
+			<div class="meio-campo">
+				<div class="lua">
+					<div class="bola"></div>
+				</div>
+			</div>
+
+			<!-- area direita -->
+			<div class="area area-direita">
+				<div class="meia-lua"></div>
+				<div class="pequena-area"></div>
+			</div>
+
+			<!-- area esquerda -->
+			<div class="area area-esquerda">
+				<div class="meia-lua"></div>
+				<div class="pequena-area"></div>
+			</div>
+
+			<div class="goleiro">
+				<span class="numero">24</span>
+			</div>
+
+			<div class="botao camisa-2">
+				<span class="numero">2</span>
+			</div>
+
+			<div class="botao camisa-3">
+				<span class="numero">3</span>
+			</div>
+
+			<div class="botao camisa-13">
+				<span class="numero">13</span>
+			</div>
+
+			<div class="botao camisa-6">
+				<span class="numero">6</span>
+			</div>
+
+			<div class="botao camisa-5">
+				<span class="numero">5</span>
+			</div>
+
+			<div class="botao camisa-8">
+				<span class="numero">8</span>
+			</div>
+
+			<div class="botao camisa-20">
+				<span class="numero">20</span>
+			</div>
+
+			<div class="botao camisa-23">
+				<span class="numero">23</span>
+			</div>
+
+			<div class="botao camisa-11">
+				<span class="numero">11</span>
+			</div>
+
+			<div class="botao camisa-9">
+				<span class="numero">9</span>
+			</div>
+		</div>
+		<div class="tecnico">Tite</div>
+		<div class="descricao">Futebol de Botão</div>
+	</div>
+	
+</body>
+</html>
